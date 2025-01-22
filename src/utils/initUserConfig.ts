@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { initializeVisibilityFunctions } from './VisibilitySingleton';
-import createGetUserPermissions from '../auth/createGetUserPermissions';
 import { ChromeUser } from '@redhat-cloud-services/types';
 
 export type ChromeUserConfig = {
@@ -21,7 +20,7 @@ export const initChromeUserConfig = async ({ getUser, token }: { getUser: () => 
   initializeVisibilityFunctions({
     getUser,
     getToken: () => Promise.resolve(token),
-    getUserPermissions: createGetUserPermissions(getUser, () => Promise.resolve(token)),
+    getUserPermissions: () => Promise.resolve([]),
     isPreview: config.data.uiPreview,
   });
 

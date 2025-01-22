@@ -1,4 +1,3 @@
-import { createFetchPermissionsWatcher } from '../auth/fetchPermissions';
 import { AddChromeWsEventListener, AppNavigationCB, ChromeAPI, GenericCB } from '@redhat-cloud-services/types';
 import { Store } from 'redux';
 import { AnalyticsBrowser } from '@segment/analytics-next';
@@ -59,7 +58,10 @@ export const createChromeContext = ({
   deleteNavListener,
   addWsEventListener,
 }: CreateChromeContextConfig): ChromeAPI => {
-  const fetchPermissions = createFetchPermissionsWatcher(chromeAuth.getUser);
+  // const fetchPermissions = createFetchPermissionsWatcher(chromeAuth.getUser);
+  const fetchPermissions = async (token: string, app = '', bypassCache?: boolean) => {
+    return [];
+  }
   const visibilityFunctions = getVisibilityFunctions();
   const dispatch = store.dispatch;
   const actions = {

@@ -139,8 +139,8 @@ export default defineMessages({
   },
   helpUsImproveHCC: {
     id: 'helpUsImproveHCC',
-    description: 'Help us improve the Red Hat Hybrid Cloud Console.',
-    defaultMessage: 'Help us improve the Red Hat Hybrid Cloud Console.',
+    description: 'Help us improve the Fedora Services Console.',
+    defaultMessage: 'Help us improve the Fedora Services Console.',
   },
   shareFeedback: {
     id: 'shareFeedback',

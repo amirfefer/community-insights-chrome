@@ -64,8 +64,8 @@ export const activationRequestURLs = [
 
 // Global Defaults
 export const defaultAuthOptions: ChromeAuthOptions = {
-  realm: 'redhat-external',
-  clientId: ITLess() ? 'console-dot' : 'cloud-services',
+  realm: 'fedora-dev',
+  clientId: 'services',
   cookieName: 'cs_jwt',
 };
 

@@ -1,5 +1,4 @@
 import React, { memo, useContext, useEffect, useRef, useState } from 'react';
-import { useAtomValue } from 'jotai';
 import classnames from 'classnames';
 import GlobalFilter from '../components/GlobalFilter/GlobalFilter';
 import { useScalprum } from '@scalprum/react-core';
@@ -18,18 +17,13 @@ import { useIntl } from 'react-intl';
 import messages from '../locales/Messages';
 import { CROSS_ACCESS_ACCOUNT_NUMBER } from '../utils/consts';
 
-import DrawerPanel from '../components/NotificationsDrawer/DrawerPanelContent';
-
 import '../components/Navigation/Navigation.scss';
 import './DefaultLayout.scss';
 import useNavigation from '../utils/useNavigation';
 import { NavigationProps } from '../components/Navigation';
 import { getUrl } from '../hooks/useBundle';
-import { useFlag } from '@unleash/proxy-client-react';
+
 import ChromeAuthContext from '../auth/ChromeAuthContext';
-import VirtualAssistant from '../components/Routes/VirtualAssistant';
-import { notificationDrawerExpandedAtom } from '../state/atoms/notificationDrawerAtom';
-import { ITLess } from '../utils/common';
 
 type ShieldedRootProps = {
   hideNav?: boolean;
@@ -51,13 +45,7 @@ type DefaultLayoutProps = {
 const DefaultLayout: React.FC<DefaultLayoutProps> = ({ hasBanner, selectedAccountNumber, hideNav, isNavOpen, setIsNavOpen, Sidebar, Footer }) => {
   const intl = useIntl();
   const { loaded, schema, noNav } = useNavigation();
-  const isNotificationsDrawerExpanded = useAtomValue(notificationDrawerExpandedAtom);
-  const drawerPanelRef = useRef<HTMLDivElement>();
-  const focusDrawer = () => {
-    const tabbableElement = drawerPanelRef.current?.querySelector('a, button') as HTMLAnchorElement | HTMLButtonElement;
-    tabbableElement.focus();
-  };
-  const isNotificationsEnabled = useFlag('platform.chrome.notifications-drawer');
+
   return (
     <Page
       className={
@@ -76,11 +64,6 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ hasBanner, selectedAccoun
           />
         </Masthead>
       }
-      {...(isNotificationsEnabled && {
-        onNotificationDrawerExpand: focusDrawer,
-        notificationDrawer: <DrawerPanel ref={drawerPanelRef} />,
-        isNotificationDrawerExpanded: isNotificationsDrawerExpanded,
-      })}
       sidebar={
         (noNav || hideNav) && Sidebar
           ? undefined
@@ -101,7 +84,6 @@ const DefaultLayout: React.FC<DefaultLayoutProps> = ({ hasBanner, selectedAccoun
           </div>
         )}
         <RedirectBanner />
-        {ITLess() ? null : <VirtualAssistant />}
         <ChromeRoutes routesProps={{ scopeClass: 'chr-scope__default-layout' }} />
         {Footer}
       </div>

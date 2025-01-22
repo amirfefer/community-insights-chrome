@@ -13,20 +13,11 @@ export function getUrl(type?: string) {
 export const bundleMapping: {
   [bundleId: string]: string;
 } = {
-  'application-services': 'Application Services',
-  openshift: 'OpenShift',
-  ansible: 'Ansible Automation Platform',
-  insights: 'RHEL',
+  insights: 'Fedora',
   edge: 'Edge management',
-  settings: 'Settings',
   landing: 'Home',
   allservices: 'Home',
-  iam: 'Identity & Access Management',
-  internal: 'Internal',
   quay: 'Quay.io',
-  subscriptions: 'Subscription Services',
-  docs: 'Documentation',
-  'user-preferences': 'User Preferences',
 };
 
 const useBundle = () => {

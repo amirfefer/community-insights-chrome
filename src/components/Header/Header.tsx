@@ -38,7 +38,7 @@ const FeedbackRoute = () => {
 };
 
 function hasUser(user: { orgId?: string; username?: string; accountNumber?: string; email?: string }): user is Required<typeof user> {
-  return !!(user.orgId && user.username && user.accountNumber && user.email);
+  return !!(user.username && user.accountNumber && user.email);
 }
 
 const MemoizedHeader = memo(
@@ -105,11 +105,6 @@ const MemoizedHeader = memo(
                   <ToolbarItem>
                     {!(!md && searchOpen) && <AllServicesDropdown />}
                     {isITLess && isOrgAdmin && <SatelliteLink />}
-                  </ToolbarItem>
-                )}
-                {userReady && !isITLess && (
-                  <ToolbarItem className="pf-v5-m-hidden pf-v5-m-visible-on-xl">
-                    <ContextSwitcher accountNumber={accountNumber} isInternal={isInternal} className="data-hj-suppress sentry-mask" />
                   </ToolbarItem>
                 )}
               </ToolbarGroup>

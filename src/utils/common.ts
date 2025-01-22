@@ -8,59 +8,14 @@ import useBundle, { getUrl } from '../hooks/useBundle';
 
 export const DEFAULT_SSO_ROUTES = {
   prod: {
-    url: ['access.redhat.com', 'prod.foo.redhat.com', 'cloud.redhat.com', 'console.redhat.com', 'us.console.redhat.com'],
-    sso: 'https://sso.redhat.com/auth',
-    portal: 'https://access.redhat.com',
-  },
-  qa: {
-    url: ['qa.foo.redhat.com', 'qa.cloud.redhat.com', 'qa.console.redhat.com'],
-    sso: 'https://sso.qa.redhat.com/auth',
-    portal: 'https://access.qa.redhat.com',
-  },
-  ci: {
-    url: ['ci.foo.redhat.com', 'ci.cloud.redhat.com', 'ci.console.redhat.com'],
-    sso: 'https://sso.qa.redhat.com/auth',
-    portal: 'https://access.qa.redhat.com',
-  },
-  qaprodauth: {
-    url: ['qaprodauth.foo.redhat.com', 'qaprodauth.cloud.redhat.com', 'qaprodauth.console.redhat.com'],
-    sso: 'https://sso.redhat.com/auth',
-    portal: 'https://access.redhat.com',
+    url: ['console.fedorainfracloud.org'],
+    sso: '',
+    portal: '',
   },
   stage: {
-    url: ['stage.foo.redhat.com', 'cloud.stage.redhat.com', 'console.stage.redhat.com', 'fetest.stage.redhat.com', 'us.console.stage.redhat.com'],
-    sso: 'https://sso.stage.redhat.com/auth',
-    portal: 'https://access.stage.redhat.com',
-  },
-  frhStage: {
-    url: ['console.stage.openshiftusgov.com'],
-    sso: 'https://sso.stage.openshiftusgov.com',
-    portal: 'https://console.stage.openshiftusgov.com',
-  },
-  frh: {
-    url: ['console.openshiftusgov.com'],
-    sso: 'https://sso.openshiftusgov.com',
-    portal: 'https://console.openshiftusgov.com',
-  },
-  ephem: {
-    url: ['ephem.outsrights.cc'],
-    sso: 'https://keycloak-fips-test.apps.fips-key.2vn8.p1.openshiftapps.com',
-    portal: 'https://ephem.outsrights.cc/',
-  },
-  int: {
-    url: ['console.int.openshiftusgov.com'],
-    sso: 'https://sso.int.openshiftusgov.com/',
-    portal: 'https://console.int.openshiftusgov.com/',
-  },
-  scr: {
-    url: ['console01.stage.openshiftusgov.com'],
-    sso: 'https://sso01.stage.openshiftusgov.com/',
-    portal: 'https://console01.stage.openshiftusgov.com',
-  },
-  dev: {
-    url: ['dev.foo.redhat.com', 'console.dev.redhat.com', 'us.console.dev.redhat.com'],
-    sso: 'https://sso.redhat.com/auth',
-    portal: 'https://access.redhat.com',
+    url: ['console.foo.stg.fedorainfracloud.org', 'console.stg.fedorainfracloud.org', 'localhost'],
+    sso: 'http://localhost:8080',
+    portal: 'http://localhost:8080',
   },
 };
 
@@ -88,69 +43,7 @@ export function getSection() {
   return sections[1];
 }
 
-export function pageAllowsUnentitled() {
-  const pathname = getWindow().location.pathname;
-  if (
-    pathname === '/' ||
-    pathname.indexOf('/openshift') === 0 ||
-    pathname.indexOf('/beta/openshift') === 0 ||
-    pathname.indexOf('/security') === 0 ||
-    pathname.indexOf('/beta/security') === 0 ||
-    pathname.indexOf('/application-services') === 0 ||
-    pathname.indexOf('/beta/application-services') === 0 ||
-    pathname.indexOf('/hac') === 0 ||
-    pathname.indexOf('/beta/hac') === 0 ||
-    pathname.indexOf('/ansible/ansible-dashboard/trial') === 0 ||
-    pathname.indexOf('/beta/ansible/ansible-dashboard/trial') === 0 ||
-    // allow tenants with no account numbers: RHCLOUD-21396
-    pathname.match(/\/connect\//)
-  ) {
-    return true;
-  }
 
-  return false;
-}
-
-export function pageRequiresAuthentication() {
-  const section = getSection();
-  if (
-    section === 'insights' ||
-    section === 'cost-management' ||
-    section === 'apps' ||
-    section === 'ansible' ||
-    section === 'migrations' ||
-    section === 'subscriptions' ||
-    section === 'openshift' ||
-    section === 'settings' ||
-    section === 'user-preferences' ||
-    section === 'internal' ||
-    section === 'application-services'
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-/**
- * Creates a redux listener that watches the state on given path (e.g. chrome.appNav) and calls
- * the given function when the state on the given path changes.
- *
- * The function is called with two parameters: current state value on the path, store reference
- */
-export function createReduxListener(store: Store, path: string, fn: (current: any, store: Store) => void) {
-  let previous: any = undefined;
-
-  return () => {
-    const state = store.getState();
-    const current = get(state, path);
-
-    if (current !== previous) {
-      previous = current;
-      fn(current, store);
-    }
-  };
-}
 
 export function deleteLocalStorageItems(keys: string[]) {
   keys.map((key) => localStorage.removeItem(key));
@@ -188,7 +81,7 @@ export function getEnvDetails() {
 }
 
 export function isProd() {
-  return location.host === 'cloud.redhat.com' || location.host === 'console.redhat.com' || location.host.includes('prod.foo.redhat.com');
+  return location.host === 'console.fedorainfracloud.org';
 }
 
 export function ITLess() {
@@ -363,11 +256,8 @@ export const loadFedModules = async () =>
         headers: fedModulesheaders,
       })
       .catch(loadCSCFedModules),
-    axios.get(getChromeDynamicPaths()).catch(() => ({ data: {} })),
-  ]).then(([staticConfig, feoConfig]) => {
-    if (feoConfig?.data?.chrome) {
-      staticConfig.data.chrome = feoConfig?.data?.chrome;
-    }
+  ]).then(([staticConfig]) => {
+
     return staticConfig;
   });
 

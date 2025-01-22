@@ -9,10 +9,9 @@ import { isPreviewAtom } from '../../state/atoms/releaseAtom';
 import { UNLEASH_ERROR_KEY, getUnleashClient, setUnleashClient } from './unleashClient';
 
 const config: IFlagProvider['config'] = {
-  url: `${document.location.origin}/api/featureflags/v0`,
-  clientKey: 'proxy-123',
-  appName: 'web',
-  headerName: 'X-Unleash-Auth',
+  url: `http://localhost:4242/api/frontend`,
+  clientKey: '*:development.d1f254b759524ca9da6e5f62908f7de95b197d85bed525d7fac152f7',
+  appName: 'chrome-service',
   refreshInterval: 60000,
   metricsInterval: 120000,
   fetch: (url: URL, headers: RequestInit) => {

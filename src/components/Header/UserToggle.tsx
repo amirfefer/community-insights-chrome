@@ -4,18 +4,15 @@ import { Dropdown, DropdownItem, DropdownList } from '@patternfly/react-core/dis
 import { ITLess, getEnv, isProd as isProdEnv } from '../../utils/common';
 import React, { useContext, useRef, useState } from 'react';
 
-import ChromeLink from '../ChromeLink/ChromeLink';
 import { Divider } from '@patternfly/react-core/dist/dynamic/components/Divider';
 import { EllipsisVIcon } from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
 import { MenuToggle } from '@patternfly/react-core/dist/dynamic/components/MenuToggle';
 import QuestionCircleIcon from '@patternfly/react-icons/dist/dynamic/icons/question-circle-icon';
 import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
-import UserIcon from './UserIcon';
 import classNames from 'classnames';
 import messages from '../../locales/Messages';
 import { useIntl } from 'react-intl';
 import ChromeAuthContext from '../../auth/ChromeAuthContext';
-import { useFlag } from '@unleash/proxy-client-react';
 
 const DropdownItems = ({
   username = '',
@@ -40,8 +37,6 @@ const DropdownItems = ({
   const accountNumberTooltip = `${intl.formatMessage(messages.useAccountNumber)}`;
   const questionMarkRef = useRef(null);
   const { logout } = useContext(ChromeAuthContext);
-  const enableMyUserAccessLanding = useFlag('platform.chrome.my-user-access-landing-page');
-  const myUserAccessPath = enableMyUserAccessLanding ? '/iam/user-access/overview' : '/iam/my-user-access';
 
   return [
     <DropdownItem key="Username" isDisabled>
@@ -95,38 +90,6 @@ const DropdownItems = ({
         </DropdownItem>
       )}
     </React.Fragment>,
-    <React.Fragment key="My user access wrapper">
-      <DropdownItem
-        component={({ className }) => (
-          <ChromeLink className={className} href={myUserAccessPath} appId="rbac">
-            {intl.formatMessage(messages.myUserAccess)}
-          </ChromeLink>
-        )}
-        key="My user access"
-      />
-    </React.Fragment>,
-    <React.Fragment key="user prefs wrapper">
-      <DropdownItem
-        component={({ className }) => (
-          <ChromeLink className={className} href="/settings/notifications/user-preferences" appId="userPreferences">
-            {intl.formatMessage(messages.userPreferences)}
-          </ChromeLink>
-        )}
-        key="User preferences"
-      />
-    </React.Fragment>,
-    <React.Fragment key="internal wrapper">
-      {isInternal && isProd && (
-        <DropdownItem
-          key="Internal"
-          component={({ className }) => (
-            <ChromeLink className={className} href="/internal" appId="internal">
-              {intl.formatMessage(messages.internal)}
-            </ChromeLink>
-          )}
-        />
-      )}
-    </React.Fragment>,
     <DropdownItem key="logout" component="button" onClick={logout}>
       {intl.formatMessage(messages.logout)}
     </DropdownItem>,
@@ -174,14 +137,10 @@ const UserToggle = ({ isSmall = false, extraItems = [] }: UserToggleProps) => {
           onClick={onToggle}
           variant={isSmall ? 'plain' : undefined}
           className={classNames('data-hj-suppress', 'sentry-mask', { 'pf-v5-u-pr-lg pf-v5-u-pl-lg': isSmall })}
-          {...(isSmall
-            ? {
-                id: 'UserMenu',
-                'widget-type': 'UserMenu',
-              }
-            : {
-                icon: <UserIcon />,
-              })}
+          {...(isSmall && {
+            id: 'UserMenu',
+            'widget-type': 'UserMenu',
+          })}
         >
           {isSmall ? <EllipsisVIcon /> : name}
         </MenuToggle>

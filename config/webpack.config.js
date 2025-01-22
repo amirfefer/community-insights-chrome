@@ -149,11 +149,22 @@ const commonConfig = ({ dev }) => {
         env: 'stage-beta',
         port: 1337,
         appUrl: [/^\/*$/],
-        useProxy: true,
+        useProxy: false,
         publicPath,
         proxyVerbose: true,
         isChrome: true,
         routes: {
+          ...(process.env.IB_SERVICE && {
+            '/api/image-builder/v1/': {
+              host: `http://localhost:${process.env.IB_SERVICE}`,
+            },
+          }),
+          ...(process.env.IB_FRONTEND && {
+            '/apps/image-builder': {
+              host: `http://localhost:${process.env.IB_FRONTEND}`,
+            },
+          }
+          ),
           ...(process.env.CHROME_SERVICE && {
             // web sockets
             '/wss/chrome-service/': {

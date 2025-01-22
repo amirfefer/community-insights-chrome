@@ -9,7 +9,7 @@ import { LazyQuickStartCatalog } from '../QuickStart/LazyQuickStartCatalog';
 import useQuickstartsStates from '../QuickStart/useQuickstartsStates';
 import useHelpTopicState from '../QuickStart/useHelpTopicState';
 import validateQuickstart from '../QuickStart/quickstartValidation';
-import SegmentProvider from '../../analytics/SegmentProvider';
+
 import { ITLess, chunkLoadErrorRefreshKey } from '../../utils/common';
 import useUserSSOScopes from '../../hooks/useUserSSOScopes';
 import { DeepRequired } from 'utility-types';
@@ -106,7 +106,7 @@ const RootApp = memo(({ accountId }: { accountId?: string }) => {
 
   return (
     <HistoryRouter history={chromeHistory as unknown as HistoryRouterProps['history']}>
-      <SegmentProvider>
+      {/* <SegmentProvider> */}
         <FeatureFlagsProvider>
           {/* <CrossRequestNotifier /> */}
           <Suspense fallback={null}>
@@ -119,7 +119,7 @@ const RootApp = memo(({ accountId }: { accountId?: string }) => {
             </HelpTopicContainer>
           </QuickStartContainer>
         </FeatureFlagsProvider>
-      </SegmentProvider>
+      {/* </SegmentProvider> */}
     </HistoryRouter>
   );
 });

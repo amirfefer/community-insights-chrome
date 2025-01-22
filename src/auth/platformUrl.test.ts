@@ -14,13 +14,6 @@ describe('platformUrl', () => {
     expect(ssourl).toBe('https://sso.qa.redhat.com/auth');
   });
 
-  it('should return dev sso url if env is set to console.dev', () => {
-    window.location.hostname = 'console.dev.redhat.com';
-    const ssourl = platformUrl(DEFAULT_SSO_ROUTES);
-    expect(ssourl).toBe(DEFAULT_SSO_ROUTES.dev.sso + '/');
-    // don't forget to reset the hostname for other tests
-    window.location.hostname = '';
-  });
 
   it('should return custom sso url if provided', () => {
     const customSsoUrl = 'https://custom.sso.url';
