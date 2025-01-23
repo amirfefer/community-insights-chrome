@@ -2,7 +2,7 @@
 
 **Status:** In Progress
 
-This repository contains a **forked** version of the Red Hat Hybrid Console Chroming app, adapted for use in a community Open Services Platform. The primary goal of this fork is to maintain compatibility with the Chrome API while enabling additional integrations, such as Single Sign-On (SSO) and feature flags.
+This repository contains a **forked** version of the Red Hat Hybrid Console Chroming app, adapted for use in a community Open Services Platform. The primary goal of this fork is to maintain compatibility with the Chrome API while enabling additional integrations for creating a commnuity envrioment. 
 
 
 ---
@@ -27,7 +27,7 @@ This repository contains a **forked** version of the Red Hat Hybrid Console Chro
 
 ## Overview
 
-The `insights-chrome` repository (this repository) is part of a development setup that includes several other repositories. It handles the application layout, navigation, SSO integration, and feature flag management. Together, these repositories enable a fully functional Open Services Platform.
+The `insights-chrome` and `chrome-service-backend` repositories handle the application layout, navigation, module registry, SSO integration, feature flag management, etc. Together, these repositories function as the base block for the Open Services Platform.
 
 ---
 
@@ -59,7 +59,7 @@ Ensure you have the following installed:
 
 ### Step 1: Clone Repositories
 
-Clone the required repositories into a directory called `open-services` (the exact folder name is up to you, but the structure above is recommended):
+Clone the required repositories into a paerent directory:
 
     git clone git@github.com:amirfefer/insights-chrome.git
     git clone git@github.com:amirfefer/chrome-service-backend.git
@@ -209,6 +209,6 @@ Use the following credentials to log in:
 
 1. **Timing:** Ensure that all containers (Keycloak, Unleash, DB, Kafka, etc.) have fully started before starting dependent services.  
 2. **Port Conflicts:** If any default ports conflict with other local services, adjust them accordingly.  
-3. **Production Considerations:** This setup is meant for local development only. Additional security, scaling, and configuration steps are required for any production environment.
+3. **Production Considerations:** This setup is meant for local development only. Additional configuration steps are required for any production environment.
 
 ---
