@@ -17,6 +17,8 @@ services:
     image: quay.io/cloudservices/cp-zookeeper:7.2.1
     hostname: zoo
     container_name: zoo
+    profiles:
+      - kafka
     ports:
     - "2181:2181"
     environment:
@@ -28,6 +30,8 @@ services:
     image: quay.io/cloudservices/cp-kafka:7.2.1
     hostname: kafka
     container_name: kafka
+    profiles:
+      - kafka
     ports:
     - "9092:9092"
     - "29092:29092"
