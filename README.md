@@ -18,7 +18,7 @@ This repository contains a **forked** version of the Red Hat Hybrid Console Chro
    - [Step 3: Start Chrome Service Backend](#step-3-start-chrome-service-backend)  
    - [Step 4: Start Image Builder Frontend](#step-4-start-image-builder-frontend)  
    - [Step 5: Start Image Builder Backend](#step-5-start-image-builder-backend)  
-   - [Step 6: Start the Combined Development Environment](#step-6-start-the-combined-development-environment)  
+   - [Step 6: Start Chrome UI](#step-6-start-chrome-ui)  
 5. [Accessing the Application](#accessing-the-application)  
 6. [Credentials](#credentials)  
 7. [Notes](#notes)
@@ -27,7 +27,7 @@ This repository contains a **forked** version of the Red Hat Hybrid Console Chro
 
 ## Overview
 
-The `insights-chrome` and `chrome-service-backend` repositories handle the application layout, navigation, module registry, SSO integration, feature flag management, etc. Together, these repositories function as the base block for the Open Services Platform.
+The `insights-chrome` and `chrome-service-backend` repositories handle the application layout, navigation, module registry, SSO integration, feature flag management, etc. Together, these repositories function as the base block for the Open Services Platform UI.
 
 ---
 
@@ -59,12 +59,12 @@ Ensure you have the following installed:
 
 ### Step 1: Clone Repositories
 
-Clone the required repositories into a paerent directory:
+Clone the required repositories into a parent directory:
 
     git clone git@github.com:amirfefer/insights-chrome.git
     git clone git@github.com:amirfefer/chrome-service-backend.git
-    git clone image-builder
-    git clone image-builder-frontend
+    git clone git@github.com:osbuild/image-builder-frontend.git
+    git clone git@github.com:osbuild/image-builder.git
 
 ---
 
@@ -82,8 +82,9 @@ Clone the required repositories into a paerent directory:
 
 This will launch:
 - A **Keycloak** container for local SSO.
-- An **Unleash** proxy for feature flag management.
-- Containers for **PostgreSQL** and **Kafka**.
+- An **Unleash** web server for feature flag management.
+- Containers for **PostgreSQL**
+- Kafka is optional with a **kafka** profile
 
 ---
 
@@ -93,7 +94,7 @@ This will launch:
 
        cd ../chrome-service-backend
 
-2. Create a basic environment file:
+2. In the first run, create a basic environment file:
 
        make env
 
@@ -121,7 +122,7 @@ The frontend service should now be running on **port 8003**.
 
 ### Step 5: Start Image Builder Backend
 
-1. In the `image-builder` folder, create a file named `docker-compose.image-builder.yml` (for example) containing the following:
+1. For ease setup, in the `image-builder` folder, create a file named `docker-compose.image-builder.yml` containing the following:
 
        version: '3.7'
        volumes:
@@ -165,11 +166,11 @@ The frontend service should now be running on **port 8003**.
        cd ../image-builder
        docker-compose -f docker-compose.image-builder.yml up
 
-This spins up a local PostgreSQL and the Image Builder backend on **port 8086**.
+This spins up a local PostgreSQL and the Image Builder backend (with a fake composer) on **port 8086**.
 
 ---
 
-### Step 6: Start the Combined Development Environment
+### Step 6: Start Chrome UI
 
 1. Navigate back to the `insights-chrome` directory:
 
@@ -207,8 +208,8 @@ Use the following credentials to log in:
 
 ## Notes
 
-1. **Timing:** Ensure that all containers (Keycloak, Unleash, DB, Kafka, etc.) have fully started before starting dependent services.  
+1. **Timing:** Ensure that all containers (Keycloak, Unleash, DB, etc.) have fully started before starting dependent services.  
 2. **Port Conflicts:** If any default ports conflict with other local services, adjust them accordingly.  
-3. **Production Considerations:** This setup is meant for local development only. Additional configuration steps are required for any production environment.
+3. **Production Considerations:** This setup is meant for local development only. Additional configuration steps are required for any production environment and deployment.
 
 ---
