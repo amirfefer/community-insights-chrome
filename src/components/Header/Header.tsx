@@ -6,7 +6,6 @@ import UnAuthtedHeader from './UnAuthtedHeader';
 import { MastheadBrand, MastheadContent, MastheadMain } from '@patternfly/react-core/dist/dynamic/components/Masthead';
 import { Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem } from '@patternfly/react-core/dist/dynamic/components/Toolbar';
 import SatelliteLink from './SatelliteLink';
-import ContextSwitcher from '../ContextSwitcher';
 import Feedback from '../Feedback';
 import Activation from '../Activation';
 import Logo from './Logo';
@@ -87,7 +86,8 @@ const MemoizedHeader = memo(
           </Toolbar>
         </MastheadMain>
         <MastheadContent className="pf-v5-u-mx-md pf-v5-u-mx-0-on-2xl">
-          {orgId && !isITLess && ReactDOM.createPortal(<FeedbackRoute />, document.body)}
+          {/* hide feedback tab */}
+          {/* {orgId && !isITLess && ReactDOM.createPortal(<FeedbackRoute />, document.body)} */}
           {userReady && isActivationPath && (
             <Activation
               user={{
