@@ -74,7 +74,13 @@ Clone the required repositories into a parent directory:
    
        cd insights-chrome/standalone
 
-2. Use Docker Compose (or Podman Compose) to start the required supporting services:
+2. Use Docker Compose (or Podman Compose) to start the required supporting services. Some used images are from private quay.io repositories so make sure to login via:
+
+       docker login quay.io
+       # OR if using Podman:
+       podman login quay.io
+
+   And then run:
 
        docker-compose up
        # OR if using Podman:
@@ -92,7 +98,7 @@ This will launch:
 
 1. Navigate to the `chrome-service-backend` folder:
 
-       cd ../chrome-service-backend
+       cd ../../chrome-service-backend
 
 2. In the first run, create a basic environment file:
 
@@ -164,7 +170,10 @@ The frontend service should now be running on **port 8003**.
 2. Launch the Image Builder backend containers:
 
        cd ../image-builder
+
        docker-compose -f docker-compose.image-builder.yml up
+       # OR if using Podman:
+       podman-compose -f docker-compose.image-builder.yml up
 
 This spins up a local PostgreSQL and the Image Builder backend (with a fake composer) on **port 8086**.
 
