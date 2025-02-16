@@ -61,7 +61,7 @@ export const createChromeContext = ({
   // const fetchPermissions = createFetchPermissionsWatcher(chromeAuth.getUser);
   const fetchPermissions = async (token: string, app = '', bypassCache?: boolean) => {
     return [];
-  }
+  };
   const visibilityFunctions = getVisibilityFunctions();
   const dispatch = store.dispatch;
   const actions = {

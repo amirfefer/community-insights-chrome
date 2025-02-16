@@ -3,11 +3,11 @@ import { hasAuthParams, useAuth } from 'react-oidc-context';
 import { User } from 'oidc-client-ts';
 import { BroadcastChannel } from 'broadcast-channel';
 import { ChromeUser } from '@redhat-cloud-services/types';
+import Cookies from 'js-cookie';
 import ChromeAuthContext, { ChromeAuthContextValue } from '../ChromeAuthContext';
-import { generateRoutesList } from '../../utils/common';
+import { generateRoutesList, isProd } from '../../utils/common';
 import getInitialScope from '../getInitialScope';
 import { init } from '../../utils/iqeEnablement';
-import entitlementsApi from '../entitlementsApi';
 import sentry from '../../utils/sentry';
 import AppPlaceholder from '../../components/AppPlaceholder';
 import logger from '../logger';
@@ -25,7 +25,6 @@ import { loadModulesSchemaWriteAtom } from '../../state/atoms/chromeModuleAtom';
 import chromeStore from '../../state/chromeStore';
 
 type Entitlement = { is_entitled: boolean; is_trial: boolean };
-const serviceAPI = entitlementsApi();
 const authChannel = new BroadcastChannel('auth');
 const log = logger('OIDCSecured.tsx');
 
@@ -34,43 +33,27 @@ function mapOIDCUserToChromeUser(user: User | Record<string, any>, entitlements:
   return {
     entitlements,
     identity: {
-      org_id: user.profile?.org_id as any,
+      org_id: '' as any,
       type: user.profile?.type as any,
-      account_number: user.profile?.account_number as any,
+      account_number: '' as any,
       internal: {
-        org_id: user.profile?.org_id as any,
-        account_id: user.profile?.account_id as any,
+        org_id: '' as any,
+        account_id: '' as any,
       },
       user: {
         email: user.profile?.email as any,
-        first_name: user.profile?.first_name as any,
-        last_name: user.profile?.last_name as any,
+        first_name: user.profile?.name as any,
+        last_name: '' as any,
         is_active: user.profile?.is_active as any,
-        is_org_admin: user.profile?.is_org_admin as any,
-        is_internal: user.profile?.is_internal as any,
+        is_org_admin: true as any,
+        is_internal: false as any,
         locale: user.profile?.locale as any,
-        username: user.profile?.username as any,
+        username: user.profile?.preferred_username as any,
       },
     },
   };
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
-
-async function fetchEntitlements(user: User) {
-  let entitlements: { [entitlement: string]: Entitlement } = {};
-  try {
-    if (user.profile.org_id) {
-      entitlements = (await serviceAPI.servicesGet()) as unknown as typeof entitlements;
-      return entitlements;
-    } else {
-      console.log('Cannot call entitlements API, no account number');
-      return entitlements;
-    }
-  } catch {
-    // let's swallow error from services API
-    return entitlements;
-  }
-}
 
 export function OIDCSecured({
   children,
@@ -199,7 +182,12 @@ export function OIDCSecured({
 
   useEffect(() => {
     authRef.current = auth;
-    setCookie(auth.user?.access_token ?? '', auth.user?.expires_at ?? 0);
+    if (auth.isAuthenticated) {
+      setCookie(auth.user?.id_token ?? '', auth.user?.expires_at ?? 0);
+      if (!isProd()) {
+        Cookies.set('id_jwt', auth.user?.id_token ?? '', { expires: 1 });
+      }
+    }
   }, [auth]);
 
   if (auth.error) {

@@ -1,5 +1,5 @@
 import { AuthContextProps } from 'react-oidc-context';
-import { ITLess, LOGIN_SCOPES_STORAGE_KEY, deleteLocalStorageItems } from '../../utils/common';
+import { LOGIN_SCOPES_STORAGE_KEY, deleteLocalStorageItems } from '../../utils/common';
 import { GLOBAL_FILTER_KEY, OFFLINE_REDIRECT_STORAGE_KEY } from '../../utils/consts';
 import Cookies from 'js-cookie';
 import logger from '../logger';
@@ -64,7 +64,7 @@ export function login(auth: AuthContextProps, requiredScopes: string[] = [], red
   // Redirect to login
   Cookies.set('cs_loggedOut', 'false');
   //FIX ME: Temp fix until scope is added in-boundary
-  let scope = ITLess() ? ['openid', ...requiredScopes] : ['openid', ...requiredScopes];
+  let scope = ['openid', 'profile', 'email', ...requiredScopes];
   const partner = getPartnerScope(window.location.pathname);
   if (partner) {
     scope.push(partner);

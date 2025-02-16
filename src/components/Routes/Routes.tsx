@@ -43,15 +43,15 @@ const ChromeRoutes = ({ routesProps }: RoutesProps) => {
 
   return (
     <Routes>
-        <Route
-          path="/"
-          element={
-            <Suspense fallback={LoadingFallback}>
-              <LandingRoute />
-            </Suspense>
-          }
-        />
-     
+      <Route
+        path="/"
+        element={
+          <Suspense fallback={LoadingFallback}>
+            <LandingRoute />
+          </Suspense>
+        }
+      />
+
       {redirects.map(({ path, to }) => {
         return <Route key={path} path={path} element={<Navigate replace to={to} />} />;
       })}

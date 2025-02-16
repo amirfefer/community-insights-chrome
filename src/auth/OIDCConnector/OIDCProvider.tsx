@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { DEFAULT_SSO_ROUTES, ITLess, loadFedModules } from '../../utils/common';
+import { DEFAULT_SSO_ROUTES, SSO_CLIENT_ID, loadFedModules } from '../../utils/common';
 import { AuthProvider, AuthProviderProps } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import platformUrl from '../platformUrl';
@@ -39,24 +39,34 @@ const OIDCProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   const authProviderProps: AuthProviderProps = useMemo(
     () => ({
-      client_id: ITLess() ? 'console-dot' : 'cloud-services',
-      silent_redirect_uri: `https://${window.location.host}/apps/chrome/silent-check-sso.html`,
+      client_id: SSO_CLIENT_ID,
+      loadUserInfo: true,
       automaticSilentRenew: true,
       redirect_uri: `${window.location.origin}`,
-      authority: `${state?.ssoUrl}`,
-      metadataUrl: '/realms/redhat-external/protocol/openid-connect/auth',
+      authority: state?.ssoUrl,
       monitorSession: true,
+      extraQueryParams: {
+        claims: JSON.stringify({
+          id_token: {
+            email: { essential: true },
+            name: { essential: true },
+            preferred_username: { essential: true },
+            locale: { essential: true },
+          },
+        }),
+      },
       metadata: {
-        authorization_endpoint: `${state?.ssoUrl}realms/redhat-external/protocol/openid-connect/auth`,
-        token_endpoint: `${state?.ssoUrl}realms/redhat-external/protocol/openid-connect/token`,
-        end_session_endpoint: `${state?.ssoUrl}realms/redhat-external/protocol/openid-connect/logout`,
-        check_session_iframe: `https://${window.location.host}/apps/chrome/silent-check-sso.html`,
-        revocation_endpoint: `${state?.ssoUrl}realms/redhat-external/protocol/openid-connect/revoke`,
+        authorization_endpoint: `${state?.ssoUrl}Authorization`,
+        token_endpoint: `${state?.ssoUrl}Token`,
+        userinfo_endpoint: `${state?.ssoUrl}UserInfo`,
+        jwks_uri: `${state?.ssoUrl}Jwks`,
+        end_session_endpoint: `${state?.ssoUrl}Logout`,
       },
       // removes code_challenge query param from the url
       disablePKCE: true,
+      response_mode: 'query',
       response_type: 'code',
-      response_mode: 'fragment',
+      // response_mode: 'fragment',
       onSigninCallback: () => {
         const startUrl = new URL(window.location.href);
         // remove the SSO code params from the URL
