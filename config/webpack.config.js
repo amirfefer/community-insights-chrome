@@ -6,8 +6,8 @@ const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { createJoinFunction, createJoinImplementation, asGenerator, defaultJoinGenerator } = require('resolve-url-loader');
 const searchIgnoredStyles = require('@redhat-cloud-services/frontend-components-config-utilities/search-ignored-styles');
-const proxy = require('@redhat-cloud-services/frontend-components-config-utilities/proxy');
 const imageNullLoader = require('./image-null-loader');
+const { getProxyRoutes } = require('./proxyRoutes');
 
 // call default generator then pair different variations of uri with each base
 const PFGenerator = asGenerator((item, ...rest) => {
@@ -21,6 +21,47 @@ const PFGenerator = asGenerator((item, ...rest) => {
   }
   return defaultTuples;
 });
+
+const defaultLocalAppHost = process.env.LOCAL_APP_HOST
+
+const routesConfig = {
+  ...(process.env.IB_SERVICE ? {
+    '/api/image-builder/v1/': {
+      host: `http://localhost:${process.env.IB_SERVICE}`,
+    },
+  }: {
+    '/api/image-builder/v1/': {
+      host: `https://console.stg.fedorainfracloud.org`,
+    },
+  }),
+  ...(process.env.IB_FRONTEND && {
+    '/apps/image-builder': {
+      host: `http://localhost:${process.env.IB_FRONTEND}`,
+    },
+  }),
+  ...(process.env.CHROME_SERVICE && {
+    '/wss/chrome-service/': {
+      target: `ws://localhost:${process.env.CHROME_SERVICE}`,
+      ws: true,
+    },
+    '/api/chrome-service/v1/': {
+      host: `http://localhost:${process.env.CHROME_SERVICE}`,
+    },
+  }),
+  ...(process.env.NAV_CONFIG && {
+    '/api/chrome-service/v1/static': {
+      host: `http://localhost:${process.env.NAV_CONFIG}`,
+    },
+  }),
+};
+
+const proxyRoutes = getProxyRoutes({
+  target: '',
+  routes: routesConfig,
+  localApps: process.env.LOCAL_APPS, // Optional: remove if not needed
+  defaultLocalAppHost,
+});
+
 
 const publicPath = '/apps/chrome/js/';
 const commonConfig = ({ dev }) => {
@@ -142,56 +183,11 @@ const commonConfig = ({ dev }) => {
         index: `${publicPath}index.html`,
       },
       https: true,
+      host: 'console.stg.foo.fedorainfracloud.org',
       port: 1337,
       // HMR flag
       hot: true,
-      ...proxy({
-        env: 'stage-beta',
-        port: 1337,
-        appUrl: [/^\/*$/],
-        useProxy: false,
-        publicPath,
-        proxyVerbose: true,
-        isChrome: true,
-        routes: {
-          ...(process.env.IB_SERVICE && {
-            '/api/image-builder/v1/': {
-              host: `http://localhost:${process.env.IB_SERVICE}`,
-            },
-          }),
-          ...(process.env.IB_FRONTEND && {
-            '/apps/image-builder': {
-              host: `http://localhost:${process.env.IB_FRONTEND}`,
-            },
-          }
-          ),
-          ...(process.env.CHROME_SERVICE && {
-            // web sockets
-            '/wss/chrome-service/': {
-              target: `ws://localhost:${process.env.CHROME_SERVICE}`,
-              // To upgrade the connection
-              ws: true,
-            },
-            // REST API
-            '/api/chrome-service/v1/': {
-              host: `http://localhost:${process.env.CHROME_SERVICE}`,
-            },
-          }),
-          ...(process.env.CONFIG_PORT && {
-            '/beta/config': {
-              host: `http://localhost:${process.env.CONFIG_PORT}`,
-            },
-            '/config': {
-              host: `http://localhost:${process.env.CONFIG_PORT}`,
-            },
-          }),
-          ...(process.env.NAV_CONFIG && {
-            '/api/chrome-service/v1/static': {
-              host: `http://localhost:${process.env.NAV_CONFIG}`,
-            },
-          }),
-        },
-      }),
+      proxy: proxyRoutes,      
     },
   };
 };
