@@ -14,7 +14,6 @@ describe('platformUrl', () => {
     expect(ssourl).toBe('https://sso.qa.redhat.com/auth');
   });
 
-
   it('should return custom sso url if provided', () => {
     const customSsoUrl = 'https://custom.sso.url';
     const ssourl = platformUrl(DEFAULT_SSO_ROUTES, customSsoUrl);

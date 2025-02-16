@@ -13,12 +13,13 @@ export const DEFAULT_SSO_ROUTES = {
     portal: '',
   },
   stage: {
-    url: ['console.foo.stg.fedorainfracloud.org', 'console.stg.fedorainfracloud.org', 'localhost'],
-    sso: 'http://localhost:8080',
-    portal: 'http://localhost:8080',
+    url: ['console.stg.foo.fedorainfracloud.org', 'console.stg.fedorainfracloud.org'],
+    sso: 'https://id.stg.fedoraproject.org/openidc/',
+    portal: 'https://accounts.stg.fedoraproject.org',
   },
 };
 
+export const SSO_CLIENT_ID = 'consolerhc-cli';
 export const LOGIN_SCOPES_STORAGE_KEY = '@chrome/login-scopes';
 export const chunkLoadErrorRefreshKey = 'ChunkLoadErrorRefreshed';
 export const BLOCK_CLEAR_GATEWAY_ERROR = 'BLOCK_CLEAR_GATEWAY_ERROR';
@@ -42,8 +43,6 @@ export function getSection() {
 
   return sections[1];
 }
-
-
 
 export function deleteLocalStorageItems(keys: string[]) {
   keys.map((key) => localStorage.removeItem(key));
@@ -257,7 +256,6 @@ export const loadFedModules = async () =>
       })
       .catch(loadCSCFedModules),
   ]).then(([staticConfig]) => {
-
     return staticConfig;
   });
 

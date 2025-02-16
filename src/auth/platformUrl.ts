@@ -9,22 +9,17 @@ function sanitizeUrl(url: string) {
 
 // Parse through keycloak options routes
 export default function platformUlr(env: typeof DEFAULT_SSO_ROUTES, configSsoUrl?: string) {
-  // we have to use hard coded value for console.dev.redhat.com
-  // ugly hack
-
   if (configSsoUrl) {
     return sanitizeUrl(configSsoUrl);
   }
 
   const ssoEnv = Object.entries(env).find(([, { url }]) => url.includes(location.hostname));
-
   if (ssoEnv) {
     log(`SSO Url: ${ssoEnv?.[1].sso}`);
     log(`Current env: ${ssoEnv?.[0]}`);
     return sanitizeUrl(ssoEnv?.[1].sso);
   } else {
-    log('SSO url: not found, defaulting to qa');
-    log('Current env: not found, defaulting to qa');
-    return 'https://sso.qa.redhat.com/auth';
+    log('SSO url: not found, defaulting to stage');
+    return DEFAULT_SSO_ROUTES.stage.sso;
   }
 }

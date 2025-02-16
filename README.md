@@ -2,7 +2,7 @@
 
 **Status:** In Progress
 
-This repository contains a **forked** version of the Red Hat Hybrid Console Chroming app, adapted for use in a community Open Services Platform. The primary goal of this fork is to maintain compatibility with the Chrome API while enabling additional integrations for creating a commnuity envrioment. 
+This repository contains a **forked** version of the Red Hat Hybrid Console Chroming app, adapted for use in a community Open Services Platform. The primary goal of this fork is to maintain compatibility with the Chrome API while enabling additional integrations for creating a community environment. 
 
 
 ---
@@ -17,8 +17,7 @@ This repository contains a **forked** version of the Red Hat Hybrid Console Chro
    - [Step 2: Start Supporting Services](#step-2-start-supporting-services)  
    - [Step 3: Start Chrome Service Backend](#step-3-start-chrome-service-backend)  
    - [Step 4: Start Image Builder Frontend](#step-4-start-image-builder-frontend)  
-   - [Step 5: Start Image Builder Backend](#step-5-start-image-builder-backend)  
-   - [Step 6: Start Chrome UI](#step-6-start-chrome-ui)  
+   - [Step 5: Start Chrome UI](#step-6-start-chrome-ui)  
 5. [Accessing the Application](#accessing-the-application)  
 6. [Credentials](#credentials)  
 7. [Notes](#notes)
@@ -47,11 +46,17 @@ Below is the expected directory structure for local development under a folder n
 
 Ensure you have the following installed:
 
-- **Git**  
 - **Docker** or **Podman**  
 - **Node.js** (and **npm**)
 - **Go**
 - **Make**  
+
+In order to access the https://console.stg.foo.fedorainfracloud.org/ in your browser, you have to add entries to your `/etc/hosts` file. This is a one-time setup that has to be done only once (unless you modify hosts) on each machine.
+
+```
+127.0.0.1 console.stg.foo.fedorainfracloud.org
+::1 console.stg.foo.fedorainfracloud.org
+```
 
 ---
 
@@ -87,7 +92,6 @@ Clone the required repositories into a parent directory:
        podman-compose up
 
 This will launch:
-- A **Keycloak** container for local SSO.
 - An **Unleash** web server for feature flag management.
 - Containers for **PostgreSQL**
 - Kafka is optional with a **kafka** profile
@@ -126,60 +130,7 @@ The frontend service should now be running on **port 8003**.
 
 ---
 
-### Step 5: Start Image Builder Backend
-
-1. For ease setup, in the `image-builder` folder, create a file named `docker-compose.image-builder.yml` containing the following:
-
-       version: '3.7'
-       volumes:
-         pg-db:
-       services:
-         db:
-           image: arm64v8/postgres:15.1
-           environment:
-             POSTGRES_USER: postgres
-             POSTGRES_PASSWORD: postgres
-             POSTGRES_DB: image-builder
-           volumes:
-             - pg-db:/var/lib/postgresql/data
-           ports:
-             - 8001:5432
-           healthcheck:
-             test: ["CMD-SHELL", "pg_isready -U postgres -d image-builder"]
-             interval: 2s
-             retries: 10
-
-         backend:
-           build:
-             context: .
-             dockerfile: distribution/Dockerfile-ubi
-           environment:
-             PGHOST: db
-             PGPORT: 5432
-             PGDATABASE: image-builder
-             PGUSER: postgres
-             PGPASSWORD: postgres
-             LISTEN_ADDRESS: backend:8086
-             LOG_LEVEL: DEBUG
-           depends_on:
-             db:
-               condition: service_healthy
-           ports:
-             - 8086:8086
-
-2. Launch the Image Builder backend containers:
-
-       cd ../image-builder
-
-       docker-compose -f docker-compose.image-builder.yml up
-       # OR if using Podman:
-       podman-compose -f docker-compose.image-builder.yml up
-
-This spins up a local PostgreSQL and the Image Builder backend (with a fake composer) on **port 8086**.
-
----
-
-### Step 6: Start Chrome UI
+### Step 5: Start Chrome UI
 
 1. Navigate back to the `insights-chrome` directory:
 
@@ -187,12 +138,12 @@ This spins up a local PostgreSQL and the Image Builder backend (with a fake comp
 
 2. Run the development command with environment variables pointing to the ports of the backend services:
 
-       CHROME_SERVICE=8000 IB_SERVICE=8086 IB_FRONTEND=8003 npm run dev
+       CHROME_SERVICE=8000 IB_FRONTEND=8003 npm run dev
 
 This command:
 - Sets the **Chrome** backend to port 8000 (`CHROME_SERVICE=8000`)
-- Sets the **Image Builder** backend to port 8086 (`IB_SERVICE=8086`)
 - Sets the **Image Builder** frontend to port 8003 (`IB_FRONTEND=8003`)
+- *Optional*: Sets the **Image Builder** backend to port 8086 (`IB_SERVICE=8086`), if not set, requests proxied to stage. 
 
 The development environment should now be active.
 
@@ -202,22 +153,20 @@ The development environment should now be active.
 
 After all services are running, open your browser and navigate to:
 
-    https://localhost:1337
+    https://console.stg.foo.fedorainfracloud.org:1337
 
 ---
 
 ## Credentials
 
-Use the following credentials to log in:
-
-- **Username:** admin  
-- **Password:** admin  
+Create an account in fedora staging https://accounts.stg.fedoraproject.org
+Log in with your credentials
 
 ---
 
 ## Notes
 
-1. **Timing:** Ensure that all containers (Keycloak, Unleash, DB, etc.) have fully started before starting dependent services.  
+1. **Timing:** Ensure that all containers (Unleash, DB, etc.) have fully started before starting dependent services.  
 2. **Port Conflicts:** If any default ports conflict with other local services, adjust them accordingly.  
 3. **Production Considerations:** This setup is meant for local development only. Additional configuration steps are required for any production environment and deployment.
 

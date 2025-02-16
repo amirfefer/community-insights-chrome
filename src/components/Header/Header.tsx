@@ -1,5 +1,4 @@
 import React, { Fragment, Suspense, memo, useContext, useState } from 'react';
-import ReactDOM from 'react-dom';
 import { useFlag } from '@unleash/proxy-client-react';
 import Tools from './Tools';
 import UnAuthtedHeader from './UnAuthtedHeader';
@@ -37,7 +36,7 @@ const FeedbackRoute = () => {
 };
 
 function hasUser(user: { orgId?: string; username?: string; accountNumber?: string; email?: string }): user is Required<typeof user> {
-  return !!(user.username && user.accountNumber && user.email);
+  return !!(user.username && user.email);
 }
 
 const MemoizedHeader = memo(
