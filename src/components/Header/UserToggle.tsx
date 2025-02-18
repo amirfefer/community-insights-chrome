@@ -81,7 +81,7 @@ const DropdownItems = ({
       {!isITLessEnv && (
         <DropdownItem
           key="My Profile"
-          to={`https://www.${prefix}redhat.com/wapps/ugc/protected/personalInfo.html`}
+          to={`https://accounts.${prefix}fedoraproject.org/user/${username}`}
           target="_blank"
           rel="noopener noreferrer"
           component="a"
