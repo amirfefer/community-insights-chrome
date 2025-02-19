@@ -2,7 +2,7 @@
 
 **Status:** In Progress
 
-This repository contains a **forked** version of the Red Hat Hybrid Console Chroming app, adapted for use in a community Open Services Platform. The primary goal of this fork is to maintain compatibility with the Chrome API while enabling additional integrations for creating a community environment. 
+This repository contains a **forked** version of the Red Hat Hybrid Console Chroming app, adapted for use in a community Fedora Services Platform. The primary goal of this fork is to maintain compatibility with the Chrome API while enabling additional integrations for creating a new community environment. 
 
 
 ---
@@ -26,7 +26,7 @@ This repository contains a **forked** version of the Red Hat Hybrid Console Chro
 
 ## Overview
 
-The `insights-chrome` and `chrome-service-backend` repositories handle the application layout, navigation, module registry, SSO integration, feature flag management, etc. Together, these repositories function as the base block for the Open Services Platform UI.
+The `community-chrome` and `chrome-service-backend` repositories handle the application layout, navigation, module registry, SSO integration, feature flag management, etc. Together, these repositories function as the base block for the Open Services Platform UI.
 
 ---
 
@@ -35,7 +35,7 @@ The `insights-chrome` and `chrome-service-backend` repositories handle the appli
 Below is the expected directory structure for local development under a folder named `open-services`:
 
     open-services/
-    ├── insights-chrome           # This repository (forked version)
+    ├── community-chrome          # Frontend service from Chrome
     ├── chrome-service-backend    # Backend service for Chrome
     ├── image-builder             # Backend service for Image Builder
     └── image-builder-frontend    # Frontend service for Image Builder
@@ -66,18 +66,18 @@ In order to access the https://console.stg.foo.fedorainfracloud.org/ in your bro
 
 Clone the required repositories into a parent directory:
 
-    git clone git@github.com:amirfefer/insights-chrome.git
-    git clone git@github.com:amirfefer/chrome-service-backend.git
+    git clone git@github.com:FedoraConsole/community-chrome.git
+    git clone git@github.com:FedoraConsole/chrome-service-backend.git
     git clone git@github.com:osbuild/image-builder-frontend.git
-    git clone git@github.com:osbuild/image-builder.git
+    (optional) git clone git@github.com:osbuild/image-builder.git
 
 ---
 
 ### Step 2: Start Supporting Services
 
-1. Navigate to the `standalone` folder inside `insights-chrome`:
+1. Navigate to the `standalone` folder inside `community-chrome`:
    
-       cd insights-chrome/standalone
+       cd community-chrome/standalone
 
 2. Use Docker Compose (or Podman Compose) to start the required supporting services. Some used images are from private quay.io repositories so make sure to login via:
 
@@ -132,9 +132,9 @@ The frontend service should now be running on **port 8003**.
 
 ### Step 5: Start Chrome UI
 
-1. Navigate back to the `insights-chrome` directory:
+1. Navigate back to the `community-chrome` directory:
 
-       cd ../insights-chrome
+       cd ../community-chrome
 
 2. Run the development command with environment variables pointing to the ports of the backend services:
 
