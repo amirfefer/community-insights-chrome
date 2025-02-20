@@ -32,10 +32,6 @@ const Tools = () => {
   const { user, token } = useContext(ChromeAuthContext);
   const intl = useIntl();
 
-  const betaSwitcherTitle = `${isPreview ? intl.formatMessage(messages.stopUsing) : intl.formatMessage(messages.use)} ${intl.formatMessage(
-    messages.betaRelease
-  )}`;
-
   useEffect(() => {
     if (user) {
       setState({
@@ -73,17 +69,6 @@ const Tools = () => {
       title: intl.formatMessage(messages.supportOptions),
       onClick: () => (window.location.href = supportOptionsUrl()),
     },
-  ];
-
-  /* Combine aboutMenuItems with a settings link on mobile */
-  const mobileDropdownItems = [
-    { title: 'separator' },
-    {
-      title: betaSwitcherTitle,
-      onClick: () => togglePreviewWithCheck(),
-    },
-    { title: 'separator' },
-    ...aboutMenuDropdownItems,
   ];
 
   /* QuestionMark icon that should be used for "help/support" things */
@@ -138,22 +123,6 @@ const Tools = () => {
         <Tooltip aria="none" aria-live="polite" content={'More options'} flipBehavior={['bottom']}>
           <UserToggle
             isSmall
-            extraItems={mobileDropdownItems.map((action, key) => (
-              <React.Fragment key={key}>
-                {action.title === 'separator' ? (
-                  <Divider component="li" />
-                ) : (
-                  <DropdownItem
-                    {...(action.onClick && {
-                      component: 'button',
-                      onClick: action.onClick,
-                    })}
-                  >
-                    {action.title}
-                  </DropdownItem>
-                )}
-              </React.Fragment>
-            ))}
           />
         </Tooltip>
       </ToolbarItem>
