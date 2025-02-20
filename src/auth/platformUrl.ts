@@ -20,6 +20,6 @@ export default function platformUlr(env: typeof DEFAULT_SSO_ROUTES, configSsoUrl
     return sanitizeUrl(ssoEnv?.[1].sso);
   } else {
     log('SSO url: not found, defaulting to stage');
-    return DEFAULT_SSO_ROUTES.stage.sso;
+    return DEFAULT_SSO_ROUTES.stg.sso;
   }
 }

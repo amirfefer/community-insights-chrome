@@ -12,7 +12,7 @@ export const DEFAULT_SSO_ROUTES = {
     sso: '',
     portal: '',
   },
-  stage: {
+  stg: {
     url: ['console.stg.foo.fedorainfracloud.org', 'console.stg.fedorainfracloud.org'],
     sso: 'https://id.stg.fedoraproject.org/openidc/',
     portal: 'https://accounts.stg.fedoraproject.org',
