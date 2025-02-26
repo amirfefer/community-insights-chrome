@@ -3,6 +3,7 @@ import './UserToggle.scss';
 import { Dropdown, DropdownItem, DropdownList } from '@patternfly/react-core/dist/dynamic/components/Dropdown';
 import { ITLess, getEnv, isProd as isProdEnv } from '../../utils/common';
 import React, { useContext, useRef, useState } from 'react';
+import { DEFAULT_SSO_ROUTES } from '../../utils/common';
 
 import { Divider } from '@patternfly/react-core/dist/dynamic/components/Divider';
 import { EllipsisVIcon } from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
@@ -81,7 +82,7 @@ const DropdownItems = ({
       {!isITLessEnv && (
         <DropdownItem
           key="My Profile"
-          to={`https://www.${prefix}redhat.com/wapps/ugc/protected/personalInfo.html`}
+          to={`${DEFAULT_SSO_ROUTES[env].portal}/user/${username}`}
           target="_blank"
           rel="noopener noreferrer"
           component="a"
